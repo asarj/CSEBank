@@ -15,7 +15,7 @@ public class RewardsCard extends CreditCard {
 
     public RewardsCard(String holder, long number, int expiration){
         super(holder, number, expiration);
-        this.creditCardLimit = 500.00;
+        this.rewardPoints = 0;
     }
 
     public int rewardPoints(){
@@ -24,7 +24,6 @@ public class RewardsCard extends CreditCard {
 
     public boolean redeemPoints(int pts){
         if(pts <= rewardPoints()){
-            System.out.println("\nSuccessful Transaction");
             this.cardBalance -= pts/100.0;
             this.rewardPoints -= pts;
             Transaction rewardT = new Transaction("Redemption", "CSEBank", this.cardBalance);
@@ -48,17 +47,16 @@ public class RewardsCard extends CreditCard {
 
     public boolean addTransaction(Transaction t){
         if((t.type().equals("debit") && t.amount() <= availableCredit())){
-            System.out.println("\nTransaction accepted");
-            this.rewardPoints += t.amount() * 100;
+            this.cardBalance += t.amount();
+            this.rewardPoints += (t.amount() * 100);
             this.transacts.add(t);
             return true;
         }
         else if((t.type().equals("debit") && t.amount() > availableCredit())){
-            System.out.println("\nTransaction denied");
             return false;
         }
         else if((t.type().equals("credit"))){
-            this.rewardPoints += t.amount() * 100;
+            this.cardBalance += t.amount();
             this.transacts.add(t);
             return true;
         }

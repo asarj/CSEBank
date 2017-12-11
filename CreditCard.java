@@ -48,13 +48,11 @@ public class CreditCard extends BankCard {
     @Override
     public boolean addTransaction(Transaction t) {
         if((t.type().equals("debit") && t.amount() <= availableCredit())){
-            System.out.println("\nTransaction accepted");
             this.cardBalance += t.amount();
             this.transacts.add(t);
             return true;
         }
         else if((t.type().equals("debit") && t.amount() > availableCredit())){
-            System.out.println("\nTransaction denied");
             return false;
         }
         else if((t.type().equals("credit"))){

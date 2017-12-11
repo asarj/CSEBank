@@ -19,17 +19,14 @@ public class PrepaidCard extends BankCard {
     @Override
     public boolean addTransaction(Transaction t) {
         if(t.type().equals("debit") && t.amount() <= balance()){
-            System.out.println("\nTransaction accepted");
             this.cardBalance -= t.amount();
             this.transacts.add(t);
             return true;
         }
         else if(t.type().equals("debit") && t.amount() > balance()){
-            System.out.println("\nTransaction failed");
             return false;
         }
         else if(t.type().equals("credit")){
-            System.out.println("\nTransaction accepted");
             this.cardBalance -= t.amount();
             this.transacts.add(t);
             return true;
@@ -39,7 +36,6 @@ public class PrepaidCard extends BankCard {
 
     public boolean addFunds(double amt){
         if (amt > 0){
-            System.out.println("\nFunds added");
             this.cardBalance += amt;
             Transaction prepaidT = new Transaction("top-up", "User payment", -1 * amt);
             this.transacts.add(prepaidT);

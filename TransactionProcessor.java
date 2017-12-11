@@ -3,7 +3,7 @@
  * SBID: 111623178
  * Stony Brook University
  * Professor Tashbook
- */
+ **/
 
 // Driver class for the final project
 import java.util.*;
@@ -13,42 +13,40 @@ public class TransactionProcessor {
     public static BankCard convertToCard(String data){
         Scanner s = new Scanner(data);
         long cardNumber = s.nextLong();
+        String name = s.next();
         String type = "";
-        if(getCardType(cardNumber) != null){
+        if(getCardType(cardNumber) != null) {
             type = getCardType(cardNumber);
-            if(type.equals("CreditCard")){
-                CreditCard cc;
-                if(s.hasNextDouble()){
-                    cc = new CreditCard(s.next(), cardNumber, s.nextInt(), s.nextDouble());
-                }
-                else{
-                    cc = new CreditCard(s.next(), cardNumber, s.nextInt());
-                }
-                return cc;
-            }
-            else if(type.equals("RewardsCard")){
-                RewardsCard rc;
-                if(s.hasNextDouble()){
-                    rc = new RewardsCard(s.next(), cardNumber, s.nextInt(), s.nextDouble());
-                }
-                else{
-                    rc = new RewardsCard(s.next(), cardNumber, s.nextInt());
-                }
-                return rc;
-            }
-            else if(type.equals("PrepaidCard")){
+            if (type.equals("PrepaidCard")) {
                 PrepaidCard pc;
-                if(s.hasNextDouble()){
-                    pc = new PrepaidCard(s.next(), cardNumber, s.nextDouble());
-                }
-                else{
-                    pc = new PrepaidCard(s.next(), cardNumber);
+                if (s.hasNextDouble()) {
+                    pc = new PrepaidCard(name, cardNumber, s.nextDouble());
+                } else {
+                    pc = new PrepaidCard(name, cardNumber);
                 }
                 return pc;
+            } else {
+                int exp = s.nextInt();
+
+
+                if (type.equals("CreditCard")) {
+                    CreditCard cc;
+                    if (s.hasNextDouble()) {
+                        cc = new CreditCard(name, cardNumber, exp, s.nextDouble());
+                    } else {
+                        cc = new CreditCard(name, cardNumber, exp);
+                    }
+                    return cc;
+                } else if (type.equals("RewardsCard")) {
+                    RewardsCard rc;
+                    if (s.hasNextDouble()) {
+                        rc = new RewardsCard(name, cardNumber, exp, s.nextDouble());
+                    } else {
+                        rc = new RewardsCard(name, cardNumber, exp);
+                    }
+                    return rc;
+                }
             }
-        }
-        else{
-            s.nextLine();
         }
         return null;
     }
@@ -84,7 +82,7 @@ public class TransactionProcessor {
                 String trans = s[1];
                 if(trans.equals("redeem")){
                     points = Integer.parseInt(s[2]);
-                    RewardsCard rc = (RewardsCard)c.get(i);
+                    RewardsCard rc = (RewardsCard)(c.get(i));
                     rc.redeemPoints(points);
                 }
                 else if(trans.equals("top-up")){
@@ -125,19 +123,22 @@ public class TransactionProcessor {
         return result;
     }
 
-    public static void main(String[] args){
-        System.out.println("\n\n\n------------------RESULTS FOR carddata1.txt & transactiondata1.txt------------------");
-        CardList c1 = (loadCardData("carddata1.txt"));
-        processTransactions("transactiondata1.txt", c1);
-        for(int i = 0; i < c1.size(); i++){
-            c1.get(i).printStatement();
+    public static void main(String[] args){//Prompt for user output, checks addtransaction in rewards card
+        Scanner s = new Scanner(System.in);
+        System.out.print("Enter a carddata file name: ");
+        String cd = s.nextLine();
+        System.out.print("Enter a transaction file name: ");
+        String tf = s.nextLine();
+        System.out.println("\n\n\n------------------RESULTS FOR " + cd + " & " + tf + " ------------------");
+        CardList c1 = (loadCardData(cd));
+        processTransactions(tf, c1);
+        try{
+            for(int i = 0; i < c1.size(); i++){
+                c1.get(i).printStatement();
+            }
         }
-
-        System.out.println("\n\n\n------------------RESULTS FOR carddata2.txt & transactiondata2.txt------------------");
-        CardList c2 = (loadCardData("carddata2.txt"));
-        processTransactions("transactiondata2.txt", c2);
-        for(int i = 0; i < c2.size(); i++){
-            c2.get(i).printStatement();
+        catch(NullPointerException n){
+            System.out.println("Something went wrong");
         }
     }
 }
